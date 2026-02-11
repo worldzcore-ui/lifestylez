@@ -1,92 +1,105 @@
 import feedparser
 import os
-import random
+import shutil
+import re
 from groq import Groq
 from jinja2 import Environment, FileSystemLoader
-from datetime import datetime
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 client = Groq(api_key=GROQ_API_KEY)
 
-# --- CONTENT SOURCES ---
+# Configurations
 RSS_FEEDS = [
     "https://www.tmz.com/rss.xml",
-    "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml", 
-    "https://www.dailymail.co.uk/tvshowbiz/index.rss"
+    "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"
 ]
 
-STATIC_PAGES = {
-    "about": {
-        "title": "About Lifestylez",
-        "content": "<p>Lifestylez is an AI-driven media platform dedicated to bringing you the fastest, most viral content from across the globe. Our automated systems scan thousands of sources every hour to curate the trends that matter.</p><p>Founded in 2024, we aim to redefine how news is consumed in the digital age.</p>"
-    },
-    "privacy": {
-        "title": "Privacy Policy",
-        "content": "<p><strong>1. Data Collection:</strong> We do not collect personal data directly. Third-party advertisers (Monetag) may use cookies.</p><p><strong>2. Usage:</strong> By using this site, you agree to our terms. Content is generated automatically.</p>"
-    }
-}
+def clean_filename(title):
+    """Converts a title into a filename: 'Viral News!' -> 'viral-news.html'"""
+    s = re.sub(r'[^a-zA-Z0-9\s]', '', title).lower()
+    return s.replace(' ', '-').strip()[:50] + ".html"
 
-def fetch_and_rewrite():
-    """Fetches real news and rewrites it."""
+def fetch_content():
     stories = []
-    print("Fetching news...")
+    print("Fetching feeds...")
     for feed in RSS_FEEDS:
         try:
             parsed = feedparser.parse(feed)
-            for entry in parsed.entries[:2]: # Top 2 from each
-                # Rewrite logic
-                prompt = f"Rewrite this headline to be catchy/viral (max 10 words): {entry.title}. Then write a 20 word summary."
+            for entry in parsed.entries[:4]: # Top 4 from each
+                # AI Rewrite for better reading
+                prompt = f"Rewrite this news into two parts. 1. A catchy intro (20 words). 2. A main body paragraph (50 words). Input: {entry.title} - {entry.summary}"
                 try:
                     chat = client.chat.completions.create(
                         messages=[{"role": "user", "content": prompt}],
                         model="llama3-8b-8192"
                     )
                     content = chat.choices[0].message.content
-                    stories.append({"title": entry.title, "body": content}) # Storing original title for Image Gen accuracy
-                except:
-                    stories.append({"title": entry.title, "body": "Click to read more about this trending story."})
-        except Exception as e:
-            print(f"Feed Error: {e}")
+                    
+                    # Basic splitting (AI usually returns separate lines)
+                    parts = content.split('\n')
+                    intro = parts[0] if len(parts) > 0 else "Breaking News"
+                    body = " ".join(parts[1:]) if len(parts) > 1 else entry.summary
+                    
+                    filename = clean_filename(entry.title)
+                    stories.append({
+                        "title": entry.title,
+                        "intro": intro,
+                        "body": body,
+                        "filename": filename
+                    })
+                except Exception as e:
+                    print(f"AI Error: {e}")
+        except:
+            pass
             
-    # Fallback if empty
+    # Fallback if feeds fail
     if not stories:
-        stories = [{"title": "Viral Trend Detected", "body": "Users are going crazy over this new lifestyle hack."}] * 6
-        
+        stories.append({
+            "title": "Welcome to Lifestylez",
+            "intro": "The latest viral updates appear here.",
+            "body": "We are currently updating our feed systems.",
+            "filename": "welcome.html"
+        })
     return stories
 
 def build_site():
     env = Environment(loader=FileSystemLoader('templates'))
-    stories = fetch_and_rewrite()
+    stories = fetch_content()
     
-    # 1. Build Index (Viral)
-    print("Building Index...")
+    # 1. Setup Directories
+    if os.path.exists('articles'):
+        shutil.rmtree('articles')
+    os.makedirs('articles')
+
+    # 2. Generate Individual Article Pages
+    template_article = env.get_template('article.html')
+    for story in stories:
+        with open(f"articles/{story['filename']}", 'w') as f:
+            f.write(template_article.render(story=story))
+    print(f"Generated {len(stories)} article pages.")
+
+    # 3. Generate Main Pages (Index, News)
     template_home = env.get_template('home.html')
+    
+    # Index (Viral)
     with open('index.html', 'w') as f:
         f.write(template_home.render(stories=stories))
-
-    # 2. Build News/Blog (Same content for now, different layout potential)
-    print("Building Blog...")
-    with open('blog.html', 'w') as f:
-        f.write(template_home.render(stories=stories)) # Reusing home layout for blog for now
-        
+    
+    # News Page (Can filter or show all)
     with open('news.html', 'w') as f:
         f.write(template_home.render(stories=stories))
 
-    # 3. Build Games
-    print("Building Games...")
-    template_games = env.get_template('games.html')
-    with open('games.html', 'w') as f:
-        f.write(template_games.render())
-
-    # 4. Build Static Pages (About, Privacy)
-    print("Building Static Pages...")
-    template_page = env.get_template('page.html')
+    # 4. Generate Static Pages
+    template_page = env.get_template('base.html') # Simplified for about/privacy
+    # (You can expand this if you have specific templates for them)
+    with open('about.html', 'w') as f:
+        f.write(template_home.render(stories=[])) # Placeholder
     
-    for page_name, data in STATIC_PAGES.items():
-        with open(f'{page_name}.html', 'w') as f:
-            f.write(template_page.render(title=data['title'], content=data['content']))
+    with open('games.html', 'w') as f:
+         # Use your previous games template here if you saved it
+         pass 
 
-    print("🎉 Site Generation Complete!")
+    print("Site build complete.")
 
 if __name__ == "__main__":
     build_site()
