@@ -7,105 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: #050505;
-            color: #ffffff;
-            /* subtle grid background */
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-        .glass-nav {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .nav-link {
-            position: relative;
-            color: #aaa;
-            transition: color 0.3s;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: #08d9d6;
-            transition: width 0.3s;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #ffffff; }
+        .glass-nav { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #222; }
+        .nav-link { color: #888; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .nav-link:hover { color: #fff; text-shadow: 0 0 10px #ff2e63; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
     <nav class="fixed w-full z-50 glass-nav">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center">
-                    <a href="index.html" class="text-3xl font-bold tracking-tighter">
-                        LIFE<span class="text-pink-500">STYLEZ</span>
-                    </a>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8 text-sm font-medium uppercase tracking-widest">
-                        <a href="index.html" class="nav-link">Viral</a>
-                        <a href="news.html" class="nav-link">News</a>
-                        <a href="games.html" class="nav-link text-yellow-400">Games 🎮</a>
-                        <a href="blog.html" class="nav-link">Blog</a>
-                        <a href="about.html" class="nav-link">About</a>
-                    </div>
-                </div>
-                <div>
-                    <a href="https://omg10.com/4/10565898" class="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wide shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-all">
-                        Subscribe
-                    </a>
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="text-2xl font-bold tracking-tighter">LIFE<span class="text-pink-500">STYLEZ</span></a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="nav-link">Viral</a>
+                    <a href="news.html" class="nav-link">News</a>
+                    <a href="games.html" class="nav-link text-yellow-400">Games</a>
+                    <a href="about.html" class="nav-link">About</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="pt-24 flex-grow">
+    <div class="pt-20 flex-grow">
         {% block content %}{% endblock %}
     </div>
 
-    <footer class="border-t border-gray-800 bg-black mt-20 pt-10 pb-10">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
-            <div>
-                <h3 class="text-white font-bold text-lg mb-4">LIFESTYLEZ</h3>
-                <p class="text-gray-500">The world's leading source for automated viral trends, gossip, and lifestyle hacks.</p>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-4">Explore</h4>
-                <ul class="space-y-2 text-gray-500">
-                    <li><a href="games.html" class="hover:text-pink-500">Play Games</a></li>
-                    <li><a href="blog.html" class="hover:text-pink-500">Read Articles</a></li>
-                    <li><a href="news.html" class="hover:text-pink-500">Trending News</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-4">Legal</h4>
-                <ul class="space-y-2 text-gray-500">
-                    <li><a href="privacy.html" class="hover:text-pink-500">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-pink-500">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-4">Newsletter</h4>
-                <input type="text" placeholder="Enter email..." class="w-full bg-gray-900 border border-gray-800 rounded p-2 text-white focus:outline-none focus:border-pink-500">
-            </div>
-        </div>
-        <div class="text-center text-gray-700 mt-10 text-xs">
-            © 2024 Lifestylez Media Group. All rights reserved.
-        </div>
+    <footer class="bg-black border-t border-gray-900 py-8 mt-12 text-center text-gray-600 text-xs">
+        <p>&copy; 2024 Lifestylez. <a href="privacy.html" class="hover:text-white">Privacy Policy</a></p>
     </footer>
 
 </body>
