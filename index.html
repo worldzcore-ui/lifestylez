@@ -11,6 +11,7 @@
         .glass-nav { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #222; }
         .nav-link { color: #888; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
         .nav-link:hover { color: #fff; text-shadow: 0 0 10px #ff2e63; }
+        .active-link { color: #ff2e63; text-shadow: 0 0 10px #ff2e63; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -18,12 +19,19 @@
     <nav class="fixed w-full z-50 glass-nav">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <a href="index.html" class="text-2xl font-bold tracking-tighter">LIFE<span class="text-pink-500">STYLEZ</span></a>
+                <a href="index.html" class="text-2xl font-bold tracking-tighter">
+                    LIFE<span class="text-pink-500">STYLEZ</span>
+                </a>
+                
                 <div class="hidden md:flex space-x-8">
-                    <a href="index.html" class="nav-link">Viral</a>
-                    <a href="news.html" class="nav-link">News</a>
-                    <a href="games.html" class="nav-link text-yellow-400">Games</a>
-                    <a href="about.html" class="nav-link">About</a>
+                    <a href="index.html" class="nav-link active-link">Viral</a>
+                    <a href="news.html" class="nav-link ">News</a>
+                    <a href="games.html" class="nav-link text-yellow-400 ">Games 🎮</a>
+                    <a href="about.html" class="nav-link ">About</a>
+                </div>
+
+                <div class="md:hidden">
+                    <a href="games.html" class="text-yellow-400 font-bold">PLAY 🎮</a>
                 </div>
             </div>
         </div>
@@ -35,15 +43,30 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         
         <div class="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-pink-500/50 transition-all group">
-            <a href="articles/welcome.html">
+            <a href="articles/viral-game.html">
                 <div class="relative h-48 overflow-hidden">
-                    <img src="https://image.pollinations.ai/prompt/Welcome to Lifestylez dark moody?width=400&height=300&nologo=true" 
+                    <img src="https://image.pollinations.ai/prompt/Viral Game Trends 2024 dark moody?width=400&height=300&nologo=true" 
                          class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 </div>
                 <div class="p-6">
-                    <h2 class="text-xl font-bold mb-2 group-hover:text-pink-500 transition-colors">Welcome to Lifestylez</h2>
-                    <p class="text-sm text-gray-400 line-clamp-2">The latest viral updates appear here.</p>
+                    <h2 class="text-xl font-bold mb-2 group-hover:text-pink-500 transition-colors">Viral Game Trends 2024</h2>
+                    <p class="text-sm text-gray-400 line-clamp-2">Check this out...</p>
+                    <span class="text-xs text-gray-500 mt-4 block">Read Article →</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-pink-500/50 transition-all group">
+            <a href="articles/tech-shock.html">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="https://image.pollinations.ai/prompt/New Tech Shocking Experts dark moody?width=400&height=300&nologo=true" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                </div>
+                <div class="p-6">
+                    <h2 class="text-xl font-bold mb-2 group-hover:text-pink-500 transition-colors">New Tech Shocking Experts</h2>
+                    <p class="text-sm text-gray-400 line-clamp-2">You won't believe...</p>
                     <span class="text-xs text-gray-500 mt-4 block">Read Article →</span>
                 </div>
             </a>
@@ -54,8 +77,23 @@
 
     </div>
 
-    <footer class="bg-black border-t border-gray-900 py-8 mt-12 text-center text-gray-600 text-xs">
-        <p>&copy; 2024 Lifestylez. <a href="privacy.html" class="hover:text-white">Privacy Policy</a></p>
+    <footer class="bg-black border-t border-gray-900 py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-gray-600">
+            <div>
+                <h3 class="text-white font-bold mb-4">LIFESTYLEZ</h3>
+                <p>Automated viral trends and gaming content.</p>
+            </div>
+            <div>
+                <h3 class="text-white font-bold mb-4">Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="privacy.html" class="hover:text-pink-500">Privacy Policy</a></li>
+                    <li><a href="about.html" class="hover:text-pink-500">About Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <p>&copy; 2024 Lifestylez Media.</p>
+            </div>
+        </div>
     </footer>
 
 </body>
