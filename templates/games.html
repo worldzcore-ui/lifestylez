@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 text-center">
+    <h1 class="text-5xl font-bold mb-4">Arcade Zone 🕹️</h1>
+    <p class="text-gray-400 mb-12">Play instant games. No download required.</p>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for i in range(8) %}
+        <a href="https://omg10.com/4/10565898" target="_blank" class="group relative aspect-square bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 hover:border-pink-500 transition-all">
+            <img src="https://image.pollinations.ai/prompt/video game icon level {{ i }} neon style?width=400&height=400&nologo=true" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <span class="bg-pink-600 text-white px-4 py-2 rounded-full font-bold shadow-lg transform group-hover:scale-110 transition-transform">PLAY NOW</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
