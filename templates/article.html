@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ story.title }} | Lifestylez{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+    
+    <img src="https://image.pollinations.ai/prompt/{{ story.title }} photorealistic editorial?width=800&height=400&nologo=true" 
+         class="w-full h-64 md:h-96 object-cover rounded-2xl shadow-2xl mb-8 border border-gray-800">
+
+    <span class="text-pink-500 font-bold tracking-widest text-xs uppercase">Trending Now</span>
+    <h1 class="text-3xl md:text-5xl font-bold mt-2 mb-6 leading-tight">{{ story.title }}</h1>
+    
+    <div class="prose prose-invert prose-lg text-gray-300">
+        <p class="lead text-xl text-white mb-6">{{ story.intro }}</p>
+        
+        <p>{{ story.body }}</p>
+
+        <div class="my-8 p-6 bg-gray-900 rounded-xl border border-gray-800 text-center">
+            <p class="text-sm text-gray-400 mb-3 uppercase tracking-wide">Sponsored Content</p>
+            <h3 class="text-xl font-bold text-white mb-4">You won't believe what happens next...</h3>
+            <a href="https://omg10.com/4/10565898" target="_blank" 
+               class="inline-block bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-full transform hover:scale-105 transition-all shadow-[0_0_20px_rgba(236,72,153,0.5)]">
+               ▶ Watch Full Video
+            </a>
+        </div>
+        <p>Expert analysis suggests this trend is only going to grow. We have seen similar patterns in the UK and USA markets over the last month.</p>
+        <p>Stay tuned to Lifestylez for more updates on this developing story.</p>
+    </div>
+
+</div>
+{% endblock %}
