@@ -2,83 +2,91 @@ import feedparser
 import os
 import random
 from groq import Groq
+from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
-from email.utils import parsedate_to_datetime
 
 # --- CONFIGURATION ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
+# RSS Feeds (Mix of US/UK Lifestyle & Gossip)
 RSS_FEEDS = [
-    "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml", # US Lifestyle
-    "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",      # UK Gossip
-    "https://www.tmz.com/rss.xml"                                       # Viral Gossip
+    "https://www.tmz.com/rss.xml",
+    "http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml", 
+    "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml",
+    "https://www.dailymail.co.uk/tvshowbiz/index.rss"
 ]
 
 client = Groq(api_key=GROQ_API_KEY)
 
 def fetch_stories():
-    """Fetches top stories from RSS feeds."""
+    print("Fetching news from RSS feeds...")
     stories = []
     for feed_url in RSS_FEEDS:
         try:
             feed = feedparser.parse(feed_url)
-            for entry in feed.entries[:2]: # Get top 2 from each to mix it up
+            # Take top 2 from each feed to get a good mix
+            for entry in feed.entries[:2]:
                 stories.append({
                     "title": entry.title,
-                    "link": entry.link,
                     "summary": entry.summary if 'summary' in entry else entry.title,
-                    "published": entry.published
+                    "link": entry.link
                 })
         except Exception as e:
-            print(f"Error fetching {feed_url}: {e}")
+            print(f"Failed to fetch {feed_url}: {e}")
     return stories
 
-def rewrite_story(story):
-    """Uses Groq to rewrite the story for 'Mr Universe' style."""
+def ai_rewrite(story):
+    """Uses Groq to make the story viral and short."""
     prompt = f"""
-    Act as a viral content writer for a site called 'Mr Universe'.
-    Rewrite the following news story into a short, punchy, gossip-style summary (max 100 words).
-    Use emojis. Make the title click-baity.
+    Rewrite this news into a short, exciting 2-sentence gossip snippet (max 40 words). 
+    Make it sound like a viral tweet. Do not use hashtags.
     
-    Original Title: {story['title']}
-    Original Summary: {story['summary']}
-    
-    Output format:
-    TITLE: [New Title]
-    BODY: [New Body]
+    Original: {story['title']} - {story['summary']}
     """
-    
     try:
         completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="llama3-8b-8192",
+            temperature=0.7
         )
-        content = completion.choices[0].message.content
-        
-        # Simple parsing (You might need to adjust this based on actual output)
-        lines = content.split('\n')
-        new_title = lines[0].replace("TITLE:", "").strip()
-        new_body = "\n".join(lines[1:]).replace("BODY:", "").strip()
-        
-        return {"title": new_title, "body": new_body, "orig_link": story['link']}
+        # Clean up output
+        content = completion.choices[0].message.content.strip().replace('"', '')
+        return {
+            "title": story['title'], # Keep original title or ask AI to rewrite it too
+            "body": content
+        }
     except Exception as e:
-        print(f"Error rewriting story: {e}")
+        print(f"AI Error: {e}")
         return None
 
-def update_html(new_stories):
-    """(Placeholder) We will add the HTML generation in Stage 2"""
-    print(f"Generated {len(new_stories)} new stories.")
-    # Here is where we will inject the Monetag link.
+def generate_html(stories):
+    print("Generating HTML...")
+    env = Environment(loader=FileSystemLoader('templates'))
+    template = env.get_template('index.html')
+    
+    output = template.render(
+        stories=stories,
+        last_updated=datetime.now().strftime("%B %d, %Y - %I:%M %p UTC")
+    )
+    
+    with open('index.html', 'w') as f:
+        f.write(output)
+    print("index.html saved successfully!")
 
 if __name__ == "__main__":
+    # 1. Fetch
     raw_stories = fetch_stories()
-    # Shuffle to mix US and UK news
     random.shuffle(raw_stories)
     
-    processed_stories = []
-    # Process only the top 3 to save API calls
-    for story in raw_stories[:3]: 
-        new_story = rewrite_story(story)
-        if new_story:
-            processed_stories.append(new_story)
-            
-    update_html(processed_stories)
+    # 2. Process (Rewrite top 6 stories)
+    final_stories = []
+    for story in raw_stories[:6]:
+        rewritten = ai_rewrite(story)
+        if rewritten:
+            final_stories.append(rewritten)
+    
+    # 3. Save
+    if final_stories:
+        generate_html(final_stories)
+    else:
+        print("No stories found. Skipping update.")
