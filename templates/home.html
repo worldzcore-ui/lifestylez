@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4">
+    <h1 class="text-6xl font-bold mb-10 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-600">
+        VIRAL NOW
+    </h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for story in stories %}
+        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300 shadow-2xl">
+            <img src="https://image.pollinations.ai/prompt/{{ story.title }} realistic 4k style?width=600&height=400&nologo=true" 
+                 alt="News" class="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity">
+            <div class="p-6">
+                <span class="text-xs font-bold text-pink-500 uppercase">Trending</span>
+                <h2 class="text-xl font-bold mt-2 mb-3 leading-tight">{{ story.title }}</h2>
+                <p class="text-gray-400 text-sm mb-4">{{ story.body }}</p>
+                <a href="https://omg10.com/4/10565898" class="block w-full py-3 text-center bg-gray-800 hover:bg-gray-700 rounded-lg text-white font-bold text-xs uppercase tracking-widest border border-gray-700">
+                    Read Full Story
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
